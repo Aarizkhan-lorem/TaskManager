@@ -1,5 +1,5 @@
-import React from 'react'
-import { Routes ,Route } from 'react-router-dom';
+import React, { useState } from 'react'
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import Home from './components/Home';
 import EmployeeLogin from './components/EmployeeLogin';
 import AdminLogin from './components/AdminLogin';
@@ -8,13 +8,30 @@ import ForgotPassword from './components/ForgotPassword';
 import EmployeeDashboard from './components/EmployeeDashboard';
 import AdminDashboard from './components/AdminDashboard';
 const App = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+ 
+  const changeHandler = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+  const navigate = useNavigate();
+
   return (
     <div className="">
       <Routes>
         <Route index path={"/"} element={<Home />} />
         <Route path="/employee-login" element={<EmployeeLogin />} />
         <Route path="/admin-login" element={<AdminLogin />} />
-        <Route path="/employee-signup" element={<EmployeeSignup />} />
+        <Route path="/employee-signup" element={<EmployeeSignup
+          formData={formData}
+          setFormData={setFormData}
+          changeHandler={changeHandler}
+        />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
