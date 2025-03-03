@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { IoEye } from "react-icons/io5";
+import { IoEyeOff } from "react-icons/io5";
 const EmployeeSignup = ({ formData, setFormData, changeHandler }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -38,10 +39,11 @@ const EmployeeSignup = ({ formData, setFormData, changeHandler }) => {
   return (
     <div className="w-full h-screen flex justify-center items-center bg-gray-700">
       <div
-        className={`bg-white/20 backdrop-blur-lg p-10 rounded-2xl shadow-xl w-[400px] flex flex-col gap-6 items-center transform transition-all duration-700 ease-out ${isVisible
-          ? "translate-x-0 opacity-100"
-          : "-translate-x-full opacity-0"
-          }`}
+        className={`bg-white/20 backdrop-blur-lg p-10 rounded-2xl shadow-xl w-[400px] flex flex-col gap-6 items-center transform transition-all duration-700 ease-out ${
+          isVisible
+            ? "translate-x-0 opacity-100"
+            : "-translate-x-full opacity-0"
+        }`}
       >
         <h2 className="text-2xl font-semibold text-white drop-shadow-md">
           Employee Signup
@@ -79,9 +81,9 @@ const EmployeeSignup = ({ formData, setFormData, changeHandler }) => {
             />
             <span
               onClick={() => toggleVisibility(setShowPassword)}
-              className="absolute right-3 text-white cursor-pointer"
+              className="absolute right-3 text-white text-xl cursor-pointer"
             >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
+              {showPassword ? <IoEyeOff /> : <IoEye />}
             </span>
           </div>
 
@@ -98,17 +100,12 @@ const EmployeeSignup = ({ formData, setFormData, changeHandler }) => {
             />
             <span
               onClick={() => toggleVisibility(setShowConfirmPassword)}
-              className="absolute right-3 text-white cursor-pointer"
+              className="absolute right-3 text-xl text-white cursor-pointer"
             >
-              {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+              {showConfirmPassword ? <IoEyeOff /> : <IoEye />}
             </span>
           </div>
-          {(error) ? (
-            <p style={{ color: 'red' }}>password must be same</p>
-          ) :
-            null
-
-          }
+          {error ? <p style={{ color: "red" }}>Password must be same</p> : null}
           <button
             type="submit"
             className="w-full bg-[#3E4095] text-white px-6 py-3 rounded-lg font-medium shadow-md hover:bg-[#2c2e80] active:scale-95 transition"
