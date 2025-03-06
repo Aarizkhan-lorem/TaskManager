@@ -3,8 +3,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 const EmployeeLogin = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [employeeFormData, setEmployeeFormData] = useState({
-    employeeEmail: "",
-    employeePassword: "",
+    username: "",
+    password: "",
   });
   const navigate = useNavigate();
 
@@ -20,6 +20,11 @@ const EmployeeLogin = () => {
   function submitHandler(event){
     event.preventDefault();
     console.log(employeeFormData);
+    
+
+
+
+
     navigate("/employee-dashboard");
     
   }
@@ -48,18 +53,18 @@ const EmployeeLogin = () => {
             type="email"
             placeholder="Enter your email"
             onChange={changeHandler}
-            name="employeeEmail"
+            name="username"
             required
-            value={employeeFormData.employeeEmail}
+            value={employeeFormData.username}
             className="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-gray-200 focus:ring-2 focus:ring-indigo-300 outline-none transition"
           />
           <input
             type="password"
             placeholder="Enter your password"
             onChange={changeHandler}
-            name="employeePassword"
+            name="password"
             required
-            value={employeeFormData.employeePassword}
+            value={employeeFormData.password}
             className="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-gray-200 focus:ring-2 focus:ring-indigo-300 outline-none transition"
           />
           <div className="w-full text-right">

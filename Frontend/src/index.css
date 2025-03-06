@@ -1,3 +1,39 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Hide the default scrollbar track */
+::-webkit-scrollbar {
+  width: 10px; /* Adjust width as needed */
+  height: 10px;
+  background: transparent; /* Transparent track */
+}
+
+/* Rounded Scrollbar Thumb */
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 100, 100, 0.3); /* Light gray */
+  border-radius: 2px; /* Fully rounded scrollbar */
+  transition: background 0.3s;
+}
+
+/* Hover Effect */
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 100, 100, 0.8);
+}
+
+/* Active (when dragging) */
+::-webkit-scrollbar-thumb:active {
+  background: rgba(100, 100, 100, 1);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 100, 100, 0.5) transparent;
+}
+.work-sans {
+  font-family: "Work Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}

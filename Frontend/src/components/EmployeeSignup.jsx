@@ -1,29 +1,59 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { IoEye } from "react-icons/io5";
-import { IoEyeOff } from "react-icons/io5";
-const EmployeeSignup = ({ formData, setFormData, changeHandler }) => {
+import { PiEyeClosed } from "react-icons/pi";
+import { PiEyeDuotone } from "react-icons/pi";
+import {toast , Toaster} from "react-hot-toast";
+import axios from "axios";
+const EmployeeSignup = () => {
   const [isVisible, setIsVisible] = useState(false);
-
   const [error, setError] = useState(false);
   const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
+  const [employee, setEmployee] = useState({
+    name: "",
+    username: "",
+    password: "",
+    confirmPassword: "",
+    role:"Employee"
+  });
 
-  const handleSubmit = (event) => {
+
+  const changeHandler = (event) => {
+    const { name, value } = event.target;
+    setEmployee((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  useEffect(() => {
+    console.log("Updated Employee:", employee);
+  }, [employee]);
+
+
+  const handleSubmit = async(event) => {
     event.preventDefault();
+
+
+
     // console.log("Form Submitted", formData);
-    if (formData.password === formData.confirmPassword) {
-      setFormData({
-        name: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-      })
+    if (employee.password === employee.confirmPassword) {
+
+    try {
+      const response = await axios.post(`${apiUrl}/createEmployee`, employee);
+      console.log("Employee Created:", response.data);
+      toast.success("Logged In");
       navigate("/employee-dashboard");
       setError(false);
+    } catch (error) {
+      console.error("Error creating employee:", error.response?.data || error.message);
+      toast.error(error.response?.data?.message);
+    }
     } else {
       setError(true);
     }
   }
+
+
   useEffect(() => {
     setTimeout(() => {
       setIsVisible(true);
@@ -38,6 +68,9 @@ const EmployeeSignup = ({ formData, setFormData, changeHandler }) => {
   };
   return (
     <div className="w-full h-screen flex justify-center items-center bg-gray-700">
+      <div>
+        <Toaster />
+      </div>
       <div
         className={`bg-white/20 backdrop-blur-lg p-10 rounded-2xl shadow-xl w-[400px] flex flex-col gap-6 items-center transform transition-all duration-700 ease-out ${
           isVisible
@@ -55,7 +88,7 @@ const EmployeeSignup = ({ formData, setFormData, changeHandler }) => {
             placeholder="Full Name"
             required
             name="name"
-            value={formData.name}
+            value={employee.name}
             onChange={changeHandler}
             className="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-gray-200 focus:ring-2 focus:ring-indigo-300 outline-none transition"
           />
@@ -63,8 +96,8 @@ const EmployeeSignup = ({ formData, setFormData, changeHandler }) => {
             type="email"
             placeholder="Email Address"
             required
-            name="email"
-            value={formData.email}
+            name="username"
+            value={employee.username}
             onChange={changeHandler}
             className="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-gray-200 focus:ring-2 focus:ring-indigo-300 outline-none transition"
           />
@@ -74,7 +107,7 @@ const EmployeeSignup = ({ formData, setFormData, changeHandler }) => {
               placeholder="Password"
               required
               name="password"
-              value={formData.password}
+              value={employee.password}
               onChange={changeHandler}
               style={error ? { border: "1px solid red" } : {}}
               className="w-full p-3 pr-10 rounded-lg border border-white/30 bg-white/10 text-white placeholder-gray-200 focus:ring-2 focus:ring-indigo-300 outline-none transition"
@@ -83,7 +116,7 @@ const EmployeeSignup = ({ formData, setFormData, changeHandler }) => {
               onClick={() => toggleVisibility(setShowPassword)}
               className="absolute right-3 text-white text-xl cursor-pointer"
             >
-              {showPassword ? <IoEyeOff /> : <IoEye />}
+              {showPassword ? <PiEyeDuotone /> : <PiEyeClosed />}
             </span>
           </div>
 
@@ -93,7 +126,7 @@ const EmployeeSignup = ({ formData, setFormData, changeHandler }) => {
               placeholder="Confirm Password"
               required
               name="confirmPassword"
-              value={formData.confirmPassword}
+              value={employee.confirmPassword}
               onChange={changeHandler}
               style={error ? { border: "1px solid red" } : {}}
               className="w-full p-3 pr-10 rounded-lg border border-white/30 bg-white/10 text-white placeholder-gray-200 focus:ring-2 focus:ring-indigo-300 outline-none transition"
@@ -102,7 +135,7 @@ const EmployeeSignup = ({ formData, setFormData, changeHandler }) => {
               onClick={() => toggleVisibility(setShowConfirmPassword)}
               className="absolute right-3 text-xl text-white cursor-pointer"
             >
-              {showConfirmPassword ? <IoEyeOff /> : <IoEye />}
+              {showConfirmPassword ? <PiEyeDuotone /> : <PiEyeClosed />}
             </span>
           </div>
           {error ? <p style={{ color: "red" }}>Password must be same</p> : null}
