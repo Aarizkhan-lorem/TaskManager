@@ -31,7 +31,6 @@ const tasksData = [
 const EmployeeTasks = () => {
   const [tasks, setTasks] = useState(tasksData);
 
-  // Handle progress update
   const updateProgress = (id, newProgress) => {
     setTasks(
       tasks.map((task) =>
@@ -49,7 +48,7 @@ const EmployeeTasks = () => {
 
       {/* Pending Tasks */}
       <h2 className="text-2xl font-semibold mb-4">Pending Tasks</h2>
-      <div className="bg-white shadow-md rounded-lg overflow-hidden mb-6">
+      <div className="bg-white shadow-md rounded-lg overflow-x-auto mb-6">
         <table className="w-full border-collapse">
           <thead className="bg-gray-200 text-gray-700">
             <tr>
@@ -115,7 +114,7 @@ const EmployeeTasks = () => {
 
       {/* Completed Tasks */}
       <h2 className="text-2xl font-semibold mb-4">Completed Tasks</h2>
-      <div className="bg-white shadow-md rounded-lg overflow-hidden">
+      <div className="bg-white shadow-md rounded-lg overflow-x-auto">
         <table className="w-full border-collapse">
           <thead className="bg-gray-200 text-gray-700">
             <tr>

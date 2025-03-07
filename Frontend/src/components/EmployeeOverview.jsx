@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import { useEffect, useState } from "react";
 import {
   LineChart,
@@ -12,54 +12,49 @@ import {
 import { IoChevronDown } from "react-icons/io5";
 import { BsPinAngle } from "react-icons/bs";
 import { AiOutlineThunderbolt } from "react-icons/ai";
-import EmployeeProject from './modals/EmployeeProject';
+import EmployeeProject from "./modals/EmployeeProject";
 
 const EmployeeOverview = () => {
-
-      const today = new Date();
-      const options = {
-        weekday: "long",
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      };
-    const performanceData = [
-      { name: "Day 1", value: 30 },
-      { name: "Day 2", value: 50 },
-      { name: "Day 3", value: 20 },
-      { name: "Day 4", value: 70 },
-      { name: "Day 5", value: 75 },
-      { name: "Day 6", value: 40 },
-    ];
-      const formattedDate = today.toLocaleDateString("en-GB", options);
-      const finalDate = formattedDate.replace(/(\w+)\s(\d+)/, "$1, $2");
-      console.log(finalDate);
-      const progress = (21 / 35) * 100;
-      
-      const [quote,setQuote] = useState([]);
-      useEffect(()=>{
-        const apiUrl = import.meta.env.VITE_API_BASE_URL;
-        fetch(`${apiUrl}/quote`)
-          .then((response) => response.json())
-          .then((data) => setQuote(data))
-          .catch((error) => console.error("Error fetching quote:", error));
-    
-      },[]);
-      const [project,setProject] = useState(false);
-      useEffect(()=>{
-        if(project){
-          document.body.style.overflow = 'hidden';
-        }
-        else{
-          document.body.style.overflow = "auto";
-        }
-        return ()=>{
-          document.body.style.overflow = "auto";
-        }
-      },[project])
+  const today = new Date();
+  const options = {
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  };
+  const performanceData = [
+    { name: "Day 1", value: 30 },
+    { name: "Day 2", value: 50 },
+    { name: "Day 3", value: 20 },
+    { name: "Day 4", value: 70 },
+    { name: "Day 5", value: 75 },
+    { name: "Day 6", value: 40 },
+  ];
+  const formattedDate = today.toLocaleDateString("en-GB", options);
+  const finalDate = formattedDate.replace(/(\w+)\s(\d+)/, "$1, $2");
+  const progress = (21 / 35) * 100;
+  const [quote, setQuote] = useState([]);
+  useEffect(() => {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    fetch(`${apiUrl}/quote`)
+      .then((response) => response.json())
+      .then((data) => setQuote(data))
+      .catch((error) => console.error("Error fetching quote:", error));
+  }, []);
+  const [project, setProject] = useState(false);
+  useEffect(() => {
+    if (project) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [project]);
   return (
-    <div className='mb-8'>
-      <div className="px-20 flex justify-between items-start mt-6">
+    <div className="mb-8">
+      <div className="md:px-20 flex justify-between items-start mt-6">
         <div>
           <h2 className="text-md font-semibold text-gray-500">{finalDate}</h2>
           <h2 className="text-4xl font-semibold">
@@ -73,10 +68,10 @@ const EmployeeOverview = () => {
           New Project
         </div>
       </div>
-      {project && <EmployeeProject setProject={setProject} project={project}/>}
+      {project && <EmployeeProject setProject={setProject} project={project} />}
 
-      <div className="mt-6 px-20 w-full h-[700px] grid grid-cols-3 grid-rows-2 gap-5">
-        <div className="row-span-2 grid grid-cols-2 grid-rows-3 p-3 gap-2 bg-white/50 shadow-md rounded-3xl">
+      <div className="mt-6 md:px-20 w-full  md:grid md:grid-cols-3 md:grid-rows-2 flex flex-col gap-5">
+        <div className="row-span-2 p-2 gap-2 flex flex-col bg-white/50 shadow-md rounded-3xl">
           <div className="bg-indigo-200/40 px-5 py-5 rounded-xl">
             <div className="flex gap-5">
               <div className="bg-white rounded-xl w-16 h-16 flex justify-center items-center">
@@ -181,10 +176,10 @@ const EmployeeOverview = () => {
             </ResponsiveContainer>
           </div>
         </div>
-        <div className="bg-white/50 p-3 shadow-md rounded-3xl w-[110%]">
+        <div className="bg-white/50 p-3 shadow-md rounded-3xl md:w-[110%]">
           <p className="font-bold text-center text-xl">Leaderboard (12)</p>
         </div>
-        <div className="bg-white/50 shadow-md rounded-3xl w-[90%] ml-11 p-7">
+        <div className="bg-white/50  shadow-md rounded-3xl md:w-[90%] md:ml-11 p-7">
           <div className="flex flex-col gap-3">
             <h1 className="font-semibold text-2xl text-blue-500">
               Quote Of The Day:
@@ -206,6 +201,6 @@ const EmployeeOverview = () => {
       </div>
     </div>
   );
-}
+};
 
-export default EmployeeOverview
+export default EmployeeOverview;

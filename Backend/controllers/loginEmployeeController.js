@@ -21,7 +21,7 @@ const loginEmployeeController = async(req , res) =>{
 
             if (await bcrypt.compare(password, employee.password)) {
               let token = jwt.sign(
-                { username: employee.email, id: employee._id },
+                { username: employee.username, id: employee._id ,name:employee.name},
                 process.env.JWT_SECRET,
                 { expiresIn: "2h" }
               );

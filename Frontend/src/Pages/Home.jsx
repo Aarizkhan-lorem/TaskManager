@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Navigate, NavLink, useNavigate } from "react-router-dom";
 
-const Home = () => {
+const Home = ({token,adminToken}) => {
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
 
@@ -39,18 +39,18 @@ const Home = () => {
         {/* Buttons */}
         <div className="flex flex-col gap-4 w-full">
           <NavLink
-            to="/employee-login"
+            to={token ? "/employee-dashboard" : "/employee-login"}
             className="bg-[#3E4095] text-white px-6 py-3 rounded-lg font-medium text-center shadow-md hover:bg-[#2c2e80] active:scale-95 transition transform"
           >
-             Login As Employee
+            Login As Employee
           </NavLink>
           <button
             onClick={() => {
-              navigate("/admin-login");
+              adminToken? navigate('/admin-dashboard'):navigate('/admin-login');
             }}
             className="bg-[#3E4095] text-white px-6 py-3 rounded-lg font-medium text-center shadow-md hover:bg-[#2c2e80] active:scale-95 transition transform"
           >
-             Login As Administrator
+            Login As Administrator
           </button>
         </div>
       </div>

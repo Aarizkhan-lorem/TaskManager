@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-const EmployeeLogin = () => {
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
+const EmployeeLogin = ({setToken}) => {
   const [isVisible, setIsVisible] = useState(false);
   const [employeeFormData, setEmployeeFormData] = useState({
     username: "",
@@ -17,15 +21,25 @@ const EmployeeLogin = () => {
     
   }
 
-  function submitHandler(event){
+  async function submitHandler(event){
     event.preventDefault();
-    console.log(employeeFormData);
+    try{
+      
+      const response = await axios.post(`${apiUrl}/loginEmployee` , employeeFormData);
+      localStorage.setItem("token",response.data.token);
+      setToken(response.data.token);
+      toast.success('Logged In Successfully!!')
+      navigate("/employee-dashboard");
+
+    }catch(error){
+       toast.error(error.response.data.message);
+    }
     
 
 
 
 
-    navigate("/employee-dashboard");
+    
     
   }
 
@@ -39,6 +53,7 @@ const EmployeeLogin = () => {
 
   return (
     <div className="w-full h-screen flex justify-center items-center bg-gray-700">
+
       <div
         className={`bg-white/20 backdrop-blur-lg p-10 rounded-2xl shadow-xl w-[400px] flex flex-col gap-6 items-center transform transition-all duration-700 ease-out ${
           isVisible ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"

@@ -41,7 +41,7 @@ const EmployeeSignup = () => {
     try {
       const response = await axios.post(`${apiUrl}/createEmployee`, employee);
       console.log("Employee Created:", response.data);
-      toast.success("Logged In");
+      toast.success("Signed Up Successfully!")
       navigate("/employee-dashboard");
       setError(false);
     } catch (error) {
@@ -68,9 +68,7 @@ const EmployeeSignup = () => {
   };
   return (
     <div className="w-full h-screen flex justify-center items-center bg-gray-700">
-      <div>
-        <Toaster />
-      </div>
+
       <div
         className={`bg-white/20 backdrop-blur-lg p-10 rounded-2xl shadow-xl w-[400px] flex flex-col gap-6 items-center transform transition-all duration-700 ease-out ${
           isVisible

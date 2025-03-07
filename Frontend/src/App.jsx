@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './Pages/Home';
 import EmployeeLogin from './components/EmployeeLogin';
 import AdminLogin from './components/AdminLogin';
@@ -7,6 +7,8 @@ import EmployeeSignup from './components/EmployeeSignup';
 import ForgotPassword from './components/ForgotPassword';
 import EmployeeDashboard from './Pages/EmployeeDashboard';
 import AdminDashboard from './Pages/AdminDashboard';
+import ProtectedRoute from './components/ProtectedRoute';
+import { Toaster } from 'react-hot-toast';
 const App = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -19,14 +21,23 @@ const App = () => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+  const [token,setToken] = useState(localStorage.getItem('token')||"");
+  const [adminToken , setAdminToken] = useState(localStorage.getItem('adminToken') || "");
 
 
   return (
     <div className="work-sans">
+      <Toaster />
       <Routes>
-        <Route index path={"/"} element={<Home />} />
-        <Route path="/employee-login" element={<EmployeeLogin />} />
-        <Route path="/admin-login" element={<AdminLogin />} />
+        <Route index path={"/"} element={<Home token={token} adminToken={adminToken}/>} />
+        <Route
+          path="/employee-login"
+          element={<EmployeeLogin setToken={setToken} />}
+        />
+        <Route
+          path="/admin-login"
+          element={<AdminLogin setAdminToken={setAdminToken} />}
+        />
         <Route
           path="/employee-signup"
           element={
@@ -38,8 +49,22 @@ const App = () => {
           }
         />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route
+          path="/employee-dashboard"
+          element={
+            token ? (
+              <ProtectedRoute element={<EmployeeDashboard />} />
+            ) : (
+              <Navigate to="/employee-login" />
+            )
+          }
+        />
+        <Route
+          path="/admin-dashboard"
+          element={
+            adminToken ? <AdminDashboard /> : <Navigate to="/admin-login" />
+          }
+        />
       </Routes>
     </div>
   );

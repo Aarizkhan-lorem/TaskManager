@@ -1,11 +1,13 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { NavLink,useNavigate } from "react-router-dom";
-
-const AdminLogin = () => {
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
+const AdminLogin = ({setAdminToken}) => {
     const [isVisible, setIsVisible] = useState(false);
     const [adminFormData,setAdminFormData] = useState({
-        adminEmail:"",
-        adminPassword:"",
+        username:"",
+        password:"",
     })
     function changeHandler(event){
         const {name,value} = event.target;
@@ -16,10 +18,24 @@ const AdminLogin = () => {
 
     }
     const navigate = useNavigate();
-    function submitHandler(event){
+    async function submitHandler(event){
         event.preventDefault();
-        console.log(adminFormData);
-        navigate("/admin-dashboard");
+        try{
+          const response = await axios.post(
+            `${apiUrl}/loginAdmin`,
+            adminFormData
+          );
+          console.log(response);
+          localStorage.setItem('adminToken' , response.data.token );
+          console.log(response.data.token);
+          setAdminToken(response.data.token);
+          toast.success(response.data.message);
+          navigate('/admin-dashboard');
+        }catch(error){
+          toast.error(error.response.data.message);
+        }
+        // console.log(adminFormData);
+        // navigate("/admin-dashboard");
     }
   useEffect(() => {
     setTimeout(() => {
@@ -41,18 +57,18 @@ const AdminLogin = () => {
         <form onSubmit={submitHandler} className="w-full flex flex-col gap-4">
           <input
             type="email"
-            name="adminEmail"
+            name="username"
             required
-            value={adminFormData.adminEmail}
+            value={adminFormData.username}
             onChange={changeHandler}
             placeholder="Enter admin email"
             className="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-gray-200 focus:ring-2 focus:ring-indigo-300 outline-none transition"
           />
           <input
             type="password"
-            name="adminPassword"
+            name="password"
             required
-            value={adminFormData.adminPassword}
+            value={adminFormData.password}
             onChange={changeHandler}
             placeholder="Enter admin password"
             className="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-gray-200 focus:ring-2 focus:ring-indigo-300 outline-none transition"

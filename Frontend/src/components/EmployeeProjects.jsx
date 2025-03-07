@@ -73,12 +73,10 @@ const EmployeeProjects = () => {
   const [sortOrder, setSortOrder] = useState("asc");
   const [selectedMember, setSelectedMember] = useState(null);
 
-  // Filter projects based on search input
   const filteredProjects = projectsData.filter((project) =>
     project.title.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Sort projects by deadline
   const sortedProjects = [...filteredProjects].sort((a, b) => {
     return sortOrder === "asc"
       ? new Date(a.deadline) - new Date(b.deadline)
@@ -90,24 +88,24 @@ const EmployeeProjects = () => {
       <h1 className="text-3xl font-bold mb-6">Project Listings</h1>
 
       {/* Search & Sort */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
         <input
           type="text"
           placeholder="Search projects..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="border px-4 py-2 rounded-md w-1/2"
+          className="border px-4 py-2 rounded-md w-full md:w-1/2"
         />
         <button
           onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-          className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-md"
+          className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-md w-full md:w-auto"
         >
           Sort by Deadline <FaSort />
         </button>
       </div>
 
       {/* Project Table */}
-      <div className="bg-white shadow-md rounded-lg overflow-hidden">
+      <div className="bg-white shadow-md rounded-lg overflow-x-auto">
         <table className="w-full border-collapse">
           <thead className="bg-gray-200 text-gray-700">
             <tr>
