@@ -206,6 +206,7 @@ useEffect(() => {
         </div>
         <div className="bg-white/50 p-3 shadow-md rounded-3xl md:w-[110%]">
           <p className="font-bold text-center text-xl">Leaderboard (12)</p>
+          
         </div>
         <div className="bg-white/50  shadow-md rounded-3xl md:w-[90%] md:ml-11 p-7">
           <div className="flex flex-col gap-3">
