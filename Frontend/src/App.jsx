@@ -10,6 +10,11 @@ import AdminDashboard from './Pages/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import { Toaster } from 'react-hot-toast';
 import EmployeeContextProvider from './Context/EmployeeContext';
+import AdminHome from './Admin/pages/AdminHome';
+import AllTasks from './Admin/pages/AllTasks';
+import AllEmployees from './Admin/pages/AllEmployees';
+import CompletedTasks from './Admin/pages/CompletedTasks';
+import AllGroups from './Admin/pages/AllGroups';
 const App = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -70,12 +75,18 @@ const App = () => {
             )
           }
         />
-        <Route
-          path="/admin-dashboard"
-          element={
-            adminToken ? <AdminDashboard /> : <Navigate to="/admin-login" />
-          }
-        />
+        <Route path="/admin-dashboard/*" element={
+          adminToken ? <AdminDashboard /> : <Navigate to="/admin-login" />
+        } />
+
+        {/* Admin Panel Routes */}
+        <Route path="/admin-home/*" element={adminToken ? <AdminHome /> : <Navigate to="/admin-login" /> }>
+          <Route index element={<AllTasks />} />
+          <Route path="allEmployees" element={<AllEmployees />} />
+          <Route path="completedTasks" element={<CompletedTasks />} />
+          <Route path="allTasks" element={<AllTasks />} />
+          <Route path="allGroups" element={<AllGroups />} />
+        </Route>
       </Routes>
     </div>
   );
