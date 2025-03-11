@@ -9,6 +9,7 @@ import EmployeeDashboard from './Pages/EmployeeDashboard';
 import AdminDashboard from './Pages/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import { Toaster } from 'react-hot-toast';
+import EmployeeContextProvider from './Context/EmployeeContext';
 const App = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -29,7 +30,11 @@ const App = () => {
     <div className="work-sans">
       <Toaster />
       <Routes>
-        <Route index path={"/"} element={<Home token={token} adminToken={adminToken}/>} />
+        <Route
+          index
+          path={"/"}
+          element={<Home token={token} adminToken={adminToken} />}
+        />
         <Route
           path="/employee-login"
           element={<EmployeeLogin setToken={setToken} />}
@@ -53,7 +58,13 @@ const App = () => {
           path="/employee-dashboard"
           element={
             token ? (
-              <ProtectedRoute element={<EmployeeDashboard />} />
+              <ProtectedRoute
+                element={
+                  <EmployeeContextProvider>
+                    <EmployeeDashboard />
+                  </EmployeeContextProvider>
+                }
+              />
             ) : (
               <Navigate to="/employee-login" />
             )

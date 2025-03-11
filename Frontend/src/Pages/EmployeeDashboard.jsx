@@ -7,15 +7,15 @@ import EmployeeProjects from "../components/EmployeeProjects";
 import EmployeeTasks from "../components/EmployeeTasks";
 import EmployeeReports from "../components/EmployeeReports";
 import toast from "react-hot-toast";
-import { jwtDecode } from "jwt-decode";  // Named Import
 import axios from "axios";
+import Loading from "../components/Loading";
+import ProfilePic from "../components/ProfilePic";
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
-
-
 
 const EmployeeDashboard = () => {
   const [activeTab, setActiveTab] = useState("Overview");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [employee, setEmployee] = useState(null);
   const navigate = useNavigate();
   function logoutHandler() {
     toast((t) => (
@@ -23,9 +23,9 @@ const EmployeeDashboard = () => {
         Do you want to quit?
         <button
           onClick={() => {
-            toast.dismiss(t.id); 
+            toast.dismiss(t.id);
             localStorage.removeItem("token");
-            navigate("/"); 
+            navigate("/");
           }}
           className="ml-[10px] py-[5px] px-[10px] bg-red-700 text-white border-none cursor-pointer rounded-md"
         >
@@ -35,14 +35,25 @@ const EmployeeDashboard = () => {
     ));
   }
 
-  if(menuOpen){
-    document.body.style.overflow = 'hidden';
+  if (menuOpen) {
+    document.body.style.overflow = "hidden";
   }
-  // const token = localStorage.getItem("token"); // Get stored token
-  // if (token) {
-  //   const decodedData = jwtDecode(token); // Decode JWT token
-  //   console.log("Decoded Token Data:", decodedData);
-  // }
+  useEffect(()=>{
+    const fetchEmployeeDetails=async() =>{
+      try{
+        const token = localStorage.getItem('token');
+        console.log(token);
+        const response = await axios.get(`${apiUrl}/employee-dashboard`,
+              {headers:{authorization:`Bearer ${token}`}}
+        );
+        setEmployee(response.data.data);
+      }catch(error){
+          console.log(error.message)
+
+      }
+    }
+    fetchEmployeeDetails();
+  },[])
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-100 to-purple-100">
@@ -86,7 +97,8 @@ const EmployeeDashboard = () => {
             className="text-3xl cursor-pointer"
             onClick={logoutHandler}
           />
-          <div className="h-10 w-10 rounded-full bg-yellow-200"></div>
+          <ProfilePic name={employee?employee.name:''} />
+
         </div>
       </div>
 
@@ -100,7 +112,9 @@ const EmployeeDashboard = () => {
                 setMenuOpen(false);
               }}
               className={`py-3 px-6 text-lg ${
-                activeTab === tab ? "bg-black text-white rounded-lg" : "hover:bg-gray-200"
+                activeTab === tab
+                  ? "bg-black text-white rounded-lg"
+                  : "hover:bg-gray-200"
               }`}
             >
               {tab}
@@ -110,7 +124,7 @@ const EmployeeDashboard = () => {
       )}
 
       <div className="p-4 md:pb-10 md:px-10">
-        {activeTab === "Overview" && <EmployeeOverview />}
+        {activeTab === "Overview" && <EmployeeOverview employee={employee} />}
         {activeTab === "Projects" && <EmployeeProjects />}
         {activeTab === "Tasks" && <EmployeeTasks />}
         {activeTab === "Reports" && <EmployeeReports />}

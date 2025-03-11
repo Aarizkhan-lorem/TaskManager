@@ -1,5 +1,8 @@
 import React from "react";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { format } from "date-fns";
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 import {
   LineChart,
   Line,
@@ -14,7 +17,7 @@ import { BsPinAngle } from "react-icons/bs";
 import { AiOutlineThunderbolt } from "react-icons/ai";
 import EmployeeProject from "./modals/EmployeeProject";
 
-const EmployeeOverview = () => {
+const EmployeeOverview = ({employee}) => {
   const today = new Date();
   const options = {
     weekday: "long",
@@ -33,14 +36,20 @@ const EmployeeOverview = () => {
   const formattedDate = today.toLocaleDateString("en-GB", options);
   const finalDate = formattedDate.replace(/(\w+)\s(\d+)/, "$1, $2");
   const progress = (21 / 35) * 100;
-  const [quote, setQuote] = useState([]);
-  useEffect(() => {
-    const apiUrl = import.meta.env.VITE_API_BASE_URL;
-    fetch(`${apiUrl}/quote`)
-      .then((response) => response.json())
-      .then((data) => setQuote(data))
-      .catch((error) => console.error("Error fetching quote:", error));
-  }, []);
+  const [quote, setQuote] = useState({});
+
+useEffect(() => {
+  const fetchQuote = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/quote`);
+      setQuote(response.data);
+    } catch (error) {
+      console.error("Error fetching quote:", error);
+    }
+  };
+  fetchQuote();
+}, []);
+
   const [project, setProject] = useState(false);
   useEffect(() => {
     if (project) {
@@ -52,13 +61,32 @@ const EmployeeOverview = () => {
       document.body.style.overflow = "auto";
     };
   }, [project]);
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const [pendingProjects, setPendingProjects] = useState([]);
+  const fetchPendingProjects = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/fetchEmployeeProjects`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setPendingProjects(response.data.projects);
+    } catch (error) {
+      console.error("Error fetching pending projects:", error);
+    }
+  };
+    useEffect(() => {
+      fetchPendingProjects();
+    }, [pendingProjects]);
   return (
     <div className="mb-8">
       <div className="md:px-20 flex justify-between items-start mt-6">
         <div>
           <h2 className="text-md font-semibold text-gray-500">{finalDate}</h2>
           <h2 className="text-4xl font-semibold">
-            Welcome Back, <span>Harsh</span>
+            Welcome Back,{" "}
+            <span className="text-blue-600">
+              {employee ? employee.name.split(" ")[0] : ""}
+            </span>
           </h2>
         </div>
         <div
@@ -157,7 +185,7 @@ const EmployeeOverview = () => {
             <ResponsiveContainer width="90%" height={150}>
               <LineChart data={performanceData}>
                 <CartesianGrid strokeDasharray="5 5" stroke="#ccc" />
-                <XAxis hide={true} />
+                <XAxis dataKey="name" tick={{ fontSize: 12, fill: "black" }} />
                 <YAxis
                   tickCount={3}
                   domain={[0, 100]}
@@ -196,7 +224,43 @@ const EmployeeOverview = () => {
         </div>
 
         <div className="bg-white/50 shadow-md p-4 col-span-2 rounded-3xl">
-          <p className="font-bold text-center text-xl">Projects</p>
+          <p className="font-bold text-center text-xl mb-2">Projects</p>
+          <table className="w-full">
+            <thead className="bg-blue-200 text-gray-700 ">
+              <tr className="">
+                <th className="p-3 text-center rounded-l-lg ">Project Title</th>
+                <th className="p-3 text-center">Description</th>
+                <th className="p-3 text-center">Created At</th>
+                <th className="p-3 text-center rounded-r-lg">Deadline</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pendingProjects.length > 0 ? (
+                pendingProjects.map((project) => (
+                  <tr key={project._id} className="border-b">
+                    <td className="p-3 text-center break-words max-w-[18rem]">
+                      {project.title}
+                    </td>
+                    <td className="p-3 text-center break-words max-w-[18rem]">
+                      {project.description}
+                    </td>
+                    <td className="p-3 text-center">
+                      {format(new Date(project.createdAt), "dd MMM yyyy")}
+                    </td>
+                    <td className="p-3 text-center">
+                      {format(new Date(project.deadline), "dd MMM yyyy")}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="p-3 text-center text-gray-500">
+                    No pending projects
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

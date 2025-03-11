@@ -14,7 +14,7 @@ const EmployeeSignup = () => {
     username: "",
     password: "",
     confirmPassword: "",
-    role:"Employee"
+    role:""
   });
 
 
@@ -37,23 +37,28 @@ const EmployeeSignup = () => {
 
     // console.log("Form Submitted", formData);
     if (employee.password === employee.confirmPassword) {
+      try {
+        const response = await axios.post(`${apiUrl}/createEmployee`, employee);
+        console.log("Employee Created:", response.data);
+        toast.success("Signed Up Successfully!");
+        navigate("/employee-dashboard");
+      } catch (error) {
+        console.error(
+          "Error creating employee:",
+          error.response?.data || error.message
+        );
 
-    try {
-      const response = await axios.post(`${apiUrl}/createEmployee`, employee);
-      console.log("Employee Created:", response.data);
-      toast.success("Signed Up Successfully!")
-      navigate("/employee-dashboard");
-      setError(false);
-    } catch (error) {
-      console.error("Error creating employee:", error.response?.data || error.message);
-      toast.error(error.response?.data?.message);
-    }
+        if (error.response?.data?.errors) {
+          toast.error(error.response.data.errors[0].msg); // Handle multiple validation errors
+        } else {
+          toast.error(error.response?.data?.message || "Something went wrong!");
+        }
+      }
     } else {
       setError(true);
     }
-  }
-
-
+    }
+    
   useEffect(() => {
     setTimeout(() => {
       setIsVisible(true);
@@ -87,6 +92,15 @@ const EmployeeSignup = () => {
             required
             name="name"
             value={employee.name}
+            onChange={changeHandler}
+            className="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-gray-200 focus:ring-2 focus:ring-indigo-300 outline-none transition"
+          />
+          <input
+            type="text"
+            placeholder="Provide Your Role"
+            required
+            name="role"
+            value={employee.role}
             onChange={changeHandler}
             className="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-gray-200 focus:ring-2 focus:ring-indigo-300 outline-none transition"
           />

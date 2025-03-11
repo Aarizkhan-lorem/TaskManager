@@ -1,162 +1,126 @@
-import React, { useState } from "react";
-import { format } from "date-fns";
-import { FaSort } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
+import { differenceInDays, format } from "date-fns";
+import axios from "axios";
+import ProfilePic from "./ProfilePic";
 
-const projectsData = [
-  {
-    id: 1,
-    title: "Project Alpha",
-    createdAt: "2024-03-01",
-    deadline: "2024-04-15",
-    teamMembers: [
-      {
-        id: 1,
-        name: "Alice",
-        role: "Developer",
-        avatar: "https://i.pravatar.cc/40?img=1",
-      },
-      {
-        id: 2,
-        name: "Bob",
-        role: "Designer",
-        avatar: "https://i.pravatar.cc/40?img=2",
-      },
-    ],
-    completion: 75,
-  },
-  {
-    id: 2,
-    title: "Project Beta",
-    createdAt: "2024-02-10",
-    deadline: "2024-03-30",
-    teamMembers: [
-      {
-        id: 3,
-        name: "Charlie",
-        role: "Manager",
-        avatar: "https://i.pravatar.cc/40?img=3",
-      },
-      {
-        id: 4,
-        name: "David",
-        role: "QA",
-        avatar: "https://i.pravatar.cc/40?img=4",
-      },
-    ],
-    completion: 40,
-  },
-  {
-    id: 3,
-    title: "Project Gamma",
-    createdAt: "2024-03-05",
-    deadline: "2024-05-10",
-    teamMembers: [
-      {
-        id: 5,
-        name: "Eve",
-        role: "Developer",
-        avatar: "https://i.pravatar.cc/40?img=5",
-      },
-      {
-        id: 6,
-        name: "Frank",
-        role: "Designer",
-        avatar: "https://i.pravatar.cc/40?img=6",
-      },
-    ],
-    completion: 90,
-  },
-];
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 const EmployeeProjects = () => {
-  const [search, setSearch] = useState("");
-  const [sortOrder, setSortOrder] = useState("asc");
-  const [selectedMember, setSelectedMember] = useState(null);
+  const [selectedContributor, setSelectedContributor] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const [pendingProjects, setPendingProjects] = useState([]);
+  const [completedProjects, setCompletedProjects] = useState([]);
 
-  const filteredProjects = projectsData.filter((project) =>
-    project.title.toLowerCase().includes(search.toLowerCase())
-  );
+  // Function to fetch pending projects
+  const fetchPendingProjects = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/fetchEmployeeProjects`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-  const sortedProjects = [...filteredProjects].sort((a, b) => {
-    return sortOrder === "asc"
-      ? new Date(a.deadline) - new Date(b.deadline)
-      : new Date(b.deadline) - new Date(a.deadline);
-  });
+      setPendingProjects(response.data.projects);
+    } catch (error) {
+      console.error("Error fetching pending projects:", error);
+    }
+  };
+
+  // Function to fetch completed projects
+  const fetchCompletedProjects = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/fetchCompletedProject`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setCompletedProjects(response.data.projects);
+    } catch (error) {
+      console.error("Error fetching completed projects:", error);
+    }
+  };
+
+  useEffect(()=>{
+    console.log(completedProjects);
+  },[completedProjects]);
+
+  // Fetch projects on mount
+  useEffect(() => {
+    fetchPendingProjects();
+    fetchCompletedProjects();
+  }, [token]);
+
+  // Function to mark a project as completed
+  const setProjectCompleted = async (id) => {
+    try {
+      await axios.post(`${apiUrl}/setProjectCompleted`, { id });
+
+      // ✅ Refresh both pending and completed projects
+      fetchPendingProjects();
+      fetchCompletedProjects();
+    } catch (error) {
+      console.error("Error updating project:", error);
+    }
+  };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="p-6 max-w-7xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Project Listings</h1>
 
-      {/* Search & Sort */}
-      <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
-        <input
-          type="text"
-          placeholder="Search projects..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="border px-4 py-2 rounded-md w-full md:w-1/2"
-        />
-        <button
-          onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-          className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-md w-full md:w-auto"
-        >
-          Sort by Deadline <FaSort />
-        </button>
-      </div>
-
-      {/* Project Table */}
-      <div className="bg-white shadow-md rounded-lg overflow-x-auto">
-        <table className="w-full border-collapse">
+      {/* Pending Projects Table */}
+      <div className="bg-white shadow-md rounded-lg overflow-x-auto mb-10">
+        <h2 className="text-2xl font-semibold p-4 bg-gray-100">
+          Pending Projects
+        </h2>
+        <table className="w-full table-auto border-collapse">
           <thead className="bg-gray-200 text-gray-700">
             <tr>
-              <th className="p-3 text-left">Project Title</th>
-              <th className="p-3 text-left">Created At</th>
-              <th className="p-3 text-left">Deadline</th>
-              <th className="p-3 text-left">Team Members</th>
-              <th className="p-3 text-left">Completion</th>
+              <th className="p-3 text-center">Project Title</th>
+              <th className="p-3 text-center">Description</th>
+              <th className="p-3 text-center">Created At</th>
+              <th className="p-3 text-center">Deadline</th>
+              <th className="p-3 text-center">Team Members</th>
+              <th className="p-3 text-center">Completion</th>
             </tr>
           </thead>
           <tbody>
-            {sortedProjects.length > 0 ? (
-              sortedProjects.map((project) => (
-                <tr key={project.id} className="border-b">
-                  <td className="p-3">{project.title}</td>
-                  <td className="p-3">
+            {pendingProjects.length > 0 ? (
+              pendingProjects.map((project) => (
+                <tr key={project._id} className="border-b">
+                  <td className="p-3 text-center break-words max-w-[18rem]">
+                    {project.title}
+                  </td>
+                  <td className="p-3 text-center break-words max-w-[18rem]">
+                    {project.description}
+                  </td>
+                  <td className="p-3 text-center">
                     {format(new Date(project.createdAt), "dd MMM yyyy")}
                   </td>
-                  <td className="p-3">
+                  <td className="p-3 text-center">
                     {format(new Date(project.deadline), "dd MMM yyyy")}
                   </td>
-                  <td className="p-3">
-                    <div className="flex -space-x-2">
-                      {project.teamMembers.map((member) => (
-                        <img
-                          key={member.id}
-                          src={member.avatar}
-                          alt={member.name}
-                          className="w-8 h-8 rounded-full border-2 border-white cursor-pointer hover:scale-110 transition"
-                          onClick={() => setSelectedMember(member)}
-                        />
-                      ))}
-                    </div>
-                  </td>
-                  <td className="p-3">
-                    <div className="w-36 bg-gray-200 rounded-full h-3">
+                  <td className="p-3 max-w-60 flex flex-wrap -space-x-2 justify-center items-center">
+                    {project.contributors?.map((contributor) => (
                       <div
-                        className="bg-green-500 h-3 rounded-full"
-                        style={{ width: `${project.completion}%` }}
-                      ></div>
-                    </div>
-                    <span className="text-sm text-gray-600">
-                      {project.completion}%
-                    </span>
+                        key={contributor._id}
+                        className="hover:z-10 hover:scale-105 rounded-full border-[2px] border-white"
+                        onClick={() => setSelectedContributor(contributor)}
+                      >
+                        <ProfilePic name={contributor.name} />
+                      </div>
+                    ))}
+                  </td>
+                  <td className="p-3 text-center">
+                    <button
+                      onClick={() => setProjectCompleted(project._id)}
+                      className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg font-semibold duration-100"
+                    >
+                      Set As Completed
+                    </button>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="5" className="p-3 text-center text-gray-500">
-                  No projects found
+                <td colSpan="6" className="p-3 text-center text-gray-500">
+                  No pending projects
                 </td>
               </tr>
             )}
@@ -164,23 +128,94 @@ const EmployeeProjects = () => {
         </table>
       </div>
 
-      {/* Modal for Team Member Details */}
-      {selectedMember && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white shadow-md rounded-lg overflow-x-auto">
+        <h2 className="text-2xl font-semibold p-4 bg-gray-100">
+          Completed Projects
+        </h2>
+        <table className="w-full table-auto border-collapse">
+          <thead className="bg-gray-200 text-gray-700">
+            <tr>
+              <th className="p-3 text-center">Project Title</th>
+              <th className="p-3 text-center">Description</th>
+              <th className="p-3 text-center">Created At</th>
+              <th className="p-3 text-center">Completed At</th>
+              <th className="p-3 text-center">Completed On Time?</th>
+              <th className="p-3 text-center">Team Members</th>
+            </tr>
+          </thead>
+          <tbody>
+            {completedProjects.length > 0 ? (
+              completedProjects.map((project) => (
+                <tr key={project._id} className="border-b">
+                  <td className="p-3 text-center break-words max-w-[18rem]">
+                    {project.title}
+                  </td>
+                  <td className="p-3 text-center break-words max-w-[18rem]">
+                    {project.description}
+                  </td>
+                  <td className="p-3 text-center break-words max-w-[18rem]">
+                    {format(new Date(project.createdAt), "dd MMM yyyy")}
+                  </td>
+                  <td className="p-3 text-center">
+                    {format(new Date(project.completedAt), "dd MMM yyyy")}
+                  </td>
+                  <td className="p-3 text-center font-semibold">
+                    {differenceInDays(project.createdAt, project.completedAt) >
+                    0 ? (
+                      <span className="text-red-600">
+                        {differenceInDays(
+                          project.createdAt,
+                          project.completedAt
+                        )}{" "}
+                        days late ❌
+                      </span>
+                    ) : (
+                      <span className="text-green-600">On Time ✅</span>
+                    )}
+                  </td>
+                  <td className="p-3 flex flex-wrap -space-x-2 justify-center items-center">
+                    {project.contributors?.map((contributor) => (
+                      <div
+                        key={contributor._id}
+                        className="hover:z-10 hover:scale-105  rounded-full border-[2px] border-white"
+                        onClick={() => setSelectedContributor(contributor)}
+                      >
+                        <ProfilePic name={contributor.name} />
+                      </div>
+                    ))}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" className="p-3 text-center text-gray-500">
+                  No completed projects
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Contributor Modal */}
+      {selectedContributor && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center">
           <div className="bg-white p-6 rounded-lg shadow-lg w-80 text-center">
-            <img
-              src={selectedMember.avatar}
-              alt={selectedMember.name}
-              className="w-20 h-20 rounded-full mx-auto mb-4"
-            />
-            <h2 className="text-xl font-bold">{selectedMember.name}</h2>
-            <p className="text-gray-600">{selectedMember.role}</p>
-            <button
-              className="mt-4 bg-red-500 text-white px-4 py-2 rounded-md"
-              onClick={() => setSelectedMember(null)}
-            >
-              Close
-            </button>
+            <div className="flex flex-col items-center">
+              <div className="w-16 h-16 flex items-center justify-center rounded-full bg-blue-500 text-white text-xl font-bold">
+                {selectedContributor?.name[0].toUpperCase()}
+              </div>
+              <h2 className="mt-3 text-lg font-semibold">
+                {selectedContributor?.name}
+              </h2>
+              <p className="text-gray-600">{selectedContributor.role}</p>
+              <button
+                className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
+                onClick={() => setSelectedContributor(null)}
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}

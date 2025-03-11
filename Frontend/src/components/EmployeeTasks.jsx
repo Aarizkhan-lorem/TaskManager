@@ -45,8 +45,6 @@ const EmployeeTasks = () => {
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Task Assignment</h1>
-
-      {/* Pending Tasks */}
       <h2 className="text-2xl font-semibold mb-4">Pending Tasks</h2>
       <div className="bg-white shadow-md rounded-lg overflow-x-auto mb-6">
         <table className="w-full border-collapse">
@@ -112,7 +110,6 @@ const EmployeeTasks = () => {
         </table>
       </div>
 
-      {/* Completed Tasks */}
       <h2 className="text-2xl font-semibold mb-4">Completed Tasks</h2>
       <div className="bg-white shadow-md rounded-lg overflow-x-auto">
         <table className="w-full border-collapse">
