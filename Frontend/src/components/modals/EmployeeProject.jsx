@@ -6,7 +6,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
-const EmployeeProject = ({ setProject, project }) => {
+const EmployeeProject = ({fetchTotalProjects, setProject, project }) => {
   const { allEmployees } = useContext(EmployeeContext);
   const [selectedEmployees, setSelectedEmployees] = useState([]);
 
@@ -32,7 +32,7 @@ const EmployeeProject = ({ setProject, project }) => {
     }));
   }, [selectedEmployees]);
 
-  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const [token, setToken] = useState(localStorage.getItem("adminToken") || "");
 
   
   const isFormValid =
@@ -62,6 +62,7 @@ const EmployeeProject = ({ setProject, project }) => {
       console.log(response);
       toast.success("Project Created Successfully!!");
       setProject(false);
+      fetchTotalProjects();
     } catch (error) {
       console.log(error.message);
       toast.error("Failed to create project. Try again.");

@@ -7,7 +7,7 @@ const apiUrl = import.meta.env.VITE_API_BASE_URL;
 export const EmployeeContext = createContext();
 //make an EmployeeContextProvider which is used by the EmployeeDashboard and wrapping 
 export default function EmployeeContextProvider({children}){
-    const [allEmployees,setAllEmployees] =useState(null);
+    const [allEmployees,setAllEmployees] =useState([]);
     useEffect(()=>{
         async function fetchAllEmployees(){
             try {

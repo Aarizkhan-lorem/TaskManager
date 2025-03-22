@@ -1,36 +1,54 @@
 import React, { useState } from "react";
-import AllTasks from "./AllTasks";
+import AllProjects from "./AllProjects";
 import AllEmployees from "./AllEmployees";
 import AllGroups from "./AllGroups";
-import CompletedTasks from "./CompletedTasks";
 import Sidebar from "../components/Home/Sidebar";
-
+import AllTasks from "./AllTasks";
 
 const AdminHome = () => {
   const [selectedSection, setSelectedSection] = useState("AllTasks");
+  const [totalProjects, setTotalProjects] = useState([]);
 
   const renderSection = () => {
     switch (selectedSection) {
       case "AllTasks":
-        return <AllTasks />;
+        return (
+          <AllProjects
+            setTotalProjects={setTotalProjects}
+            totalProjects={totalProjects}
+          />
+        );
       case "AllEmployees":
         return <AllEmployees />;
       case "AllGroups":
-        return <AllGroups />;
+        return (
+          <AllGroups
+            setTotalProjects={setTotalProjects}
+            totalProjects={totalProjects}
+          />
+        );
       case "CompletedTasks":
-        return <CompletedTasks />;
-      default:
         return <AllTasks />;
+      default:
+        return (
+          <AllProjects
+            setTotalProjects={setTotalProjects}
+            totalProjects={totalProjects}
+          />
+        );
     }
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen overflow-y-clip  bg-gray-50">
       {/* Sidebar */}
-      <Sidebar onSelectSection={setSelectedSection} />
+      <Sidebar
+        onSelectSection={setSelectedSection}
+        totalProjects={totalProjects}
+      />
 
       {/* Main Content */}
-      <div className="flex-1 p-6 bg-gray-100 border rounded border-black-1000">
+      <div className="flex-1 h-screen overflow-y-scroll  p-6 bg-white shadow-md rounded-lg border border-gray-200">
         {renderSection()}
       </div>
     </div>

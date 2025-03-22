@@ -1,19 +1,19 @@
 import React from 'react'
 import AdminHome from '../Admin/pages/AdminHome';
-import AllTasks from '../Admin/pages/AllTasks';
+import AllProjects from '../Admin/pages/AllProjects';
 import AllEmployees from '../Admin/pages/AllEmployees';
-import CompletedTasks from '../Admin/pages/CompletedTasks';
 import AllGroups from '../Admin/pages/AllGroups';
 import { Routes, Route } from 'react-router-dom';
+import AllTasks from '../Admin/pages/AllTasks';
 
 const AdminDashboard = () => {
   return (
-    <div className="text-black h-screen p-2 relative">
+    <div className="text-black overflow-hidden h-screen p-2 relative">
         <Routes>
           <Route path="/" element={<AdminHome/>}>
-            <Route index element={<AllTasks/>}/>
+            <Route index element={<AllProjects/>}/>
             <Route path="/allEmployees" element={<AllEmployees/>}/>
-            <Route path="/completedTasks" element={<CompletedTasks/>}/>
+            <Route path="/completedTasks" element={<AllTasks/>}/>
             <Route path="/allGroups" element={<AllGroups/>}/>
           </Route>
         </Routes>

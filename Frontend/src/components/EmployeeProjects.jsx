@@ -11,7 +11,6 @@ const EmployeeProjects = () => {
   const [pendingProjects, setPendingProjects] = useState([]);
   const [completedProjects, setCompletedProjects] = useState([]);
 
-  // Function to fetch pending projects
   const fetchPendingProjects = async () => {
     try {
       const response = await axios.get(`${apiUrl}/fetchEmployeeProjects`, {
@@ -24,7 +23,6 @@ const EmployeeProjects = () => {
     }
   };
 
-  // Function to fetch completed projects
   const fetchCompletedProjects = async () => {
     try {
       const response = await axios.get(`${apiUrl}/fetchCompletedProject`, {
@@ -52,7 +50,7 @@ const EmployeeProjects = () => {
     try {
       await axios.post(`${apiUrl}/setProjectCompleted`, { id });
 
-      // ✅ Refresh both pending and completed projects
+      // Refresh both pending and completed projects
       fetchPendingProjects();
       fetchCompletedProjects();
     } catch (error) {

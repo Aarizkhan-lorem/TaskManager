@@ -1,9 +1,12 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 import { NavLink } from "react-router-dom";
-
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 const ForgotPassword = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -15,9 +18,19 @@ const ForgotPassword = () => {
     setEmail(event.target.value);
   };
 
-  const handleSubmit = (event) => {
+  async function handleSubmit (event) {
     event.preventDefault();
     console.log("Password reset link sent to:", email);
+    try{
+      setLoading(true);
+      const response = await axios.post(`${apiUrl}/resetPasswordToken`,{email});
+      console.log(response);
+      toast.success(response.data.message);
+      setLoading(false);
+    }catch(error){
+      console.log(error.message);
+      toast.dismiss(error.message);
+    }
   };
 
   return (
@@ -43,7 +56,7 @@ const ForgotPassword = () => {
             type="submit"
             className="w-full bg-[#3E4095] text-white px-6 py-3 rounded-lg font-medium shadow-md hover:bg-[#2c2e80] active:scale-95 transition"
           >
-            Send Reset Link
+            {loading ? "Loading..." : "Send Reset Link"}
           </button>
         </form>
         <NavLink to="/" className="text-sm text-white">

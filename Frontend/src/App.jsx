@@ -11,10 +11,12 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { Toaster } from 'react-hot-toast';
 import EmployeeContextProvider from './Context/EmployeeContext';
 import AdminHome from './Admin/pages/AdminHome';
-import AllTasks from './Admin/pages/AllTasks';
+import AllProjects from './Admin/pages/AllProjects';
 import AllEmployees from './Admin/pages/AllEmployees';
-import CompletedTasks from './Admin/pages/CompletedTasks';
 import AllGroups from './Admin/pages/AllGroups';
+import AdminProtectedRoute from './components/AdminProtectedRoute';
+import ResetPassword from './Pages/ResetPassword';
+import AllTasks from './Admin/pages/AllTasks';
 const App = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -75,18 +77,36 @@ const App = () => {
             )
           }
         />
-        <Route path="/admin-dashboard/*" element={
-          adminToken ? <AdminDashboard /> : <Navigate to="/admin-login" />
-        } />
+        <Route
+          path="/admin-dashboard/*"
+          element={
+            adminToken ? (
+              <AdminProtectedRoute
+                element={
+                  <EmployeeContextProvider>
+                    <AdminDashboard />
+                  </EmployeeContextProvider>
+                }
+              />
+            ) : (
+              <Navigate to="/admin-login" />
+            )
+          }
+        />
 
         {/* Admin Panel Routes */}
-        <Route path="/admin-home/*" element={adminToken ? <AdminHome /> : <Navigate to="/admin-login" /> }>
-          <Route index element={<AllTasks />} />
+        <Route
+          path="/admin-home/*"
+          element={adminToken ? <AdminHome /> : <Navigate to="/admin-login" />}
+        >
+          <Route index element={<AllProjects />} />
           <Route path="allEmployees" element={<AllEmployees />} />
-          <Route path="completedTasks" element={<CompletedTasks />} />
-          <Route path="allTasks" element={<AllTasks />} />
+          <Route path="completedTasks" element={<AllTasks />} />
+          <Route path="allTasks" element={<AllProjects />} />
           <Route path="allGroups" element={<AllGroups />} />
         </Route>
+
+        <Route path="/update-password/:token" element={<ResetPassword/>}/>
       </Routes>
     </div>
   );

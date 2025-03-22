@@ -4,7 +4,7 @@ const { createProject } = require('../controllers/createProjectController');
 const { projectMiddleware } = require('../middlewares/projectMiddleware');
 const { fetchProjectOfEmployee } = require('../controllers/fetchProjectOfEmployee');
 const { setProjectCompleted } = require('../controllers/setProjectCompleted');
-const {fetchCompletedProject} = require('../controllers/fetchCompletedProject')
+const {fetchCompletedProject} = require('../controllers/fetchCompletedProject');
 const router = express.Router();
 
 router.post('/createProject',projectMiddleware,createProject);

@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Admin = require('../models/admin');
 const jwt = require('jsonwebtoken');
+const { fetchALlProjects } = require('../controllers/fetchAllProjects');
+router.get('/fetchAllProjects' , fetchALlProjects);
 router.post("/createAdmin", async(req,res) =>{
     try{
         const { name, username, password } = req.body;

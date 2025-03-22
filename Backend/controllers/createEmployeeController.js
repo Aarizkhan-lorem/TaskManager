@@ -54,6 +54,7 @@ const createEmployeeController = async (req, res) => {
       username,
       role,
       password: hashedPassword,
+      profileImage: `https://api.dicebear.com/7.x/initials/svg?seed=${name.split(' ')[0]} ${name.split(' ')[1]}`,
     });
 
     res.status(201).json({
