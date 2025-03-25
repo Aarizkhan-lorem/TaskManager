@@ -37,9 +37,8 @@ The **Task Manager** is a full-stack web application designed to help teams and 
 - Defined **Mongoose schemas** for users and tasks
 - Connected and managed data with **MongoDB**
 
-### 🚀 Deployment & Optimization
-- **Frontend** deployed on **Vercel/Netlify**
-- **Backend** deployed on **Render/Heroku/AWS**
+### 🚀 Deployment
+-haven't deployed yet
 
 ---
 
@@ -72,15 +71,9 @@ npm install  # Install dependencies
 
 #### 3️⃣ Running the Application
 ```sh
-# Start the Backend
-cd ../Backend
-npm run dev
-
-# Open a new terminal and start the Frontend
-cd ../Frontend
 npm run dev
 ```
-- Once the frontend starts, a **localhost link** will be displayed.
+- Once the Application starts, a **localhost link** will be displayed.
 - Copy and paste the link into your **browser** to access the application.
 
 ---
@@ -93,27 +86,6 @@ npm run dev
 Use the following credentials to log in as an **Admin**:
 - **Username:** `zidio@gmail.com`
 - **Password:** `itskhan1234`
-
----
-
-## 📝 Steps to Start the Project
-1. Clone the repository (refer to **Cloning the Repository** section)
-2. Open the **frontend** folder in **VS Code**
-3. In the terminal, run:
-   ```sh
-   npm install
-   ```
-4. Open the **backend** folder in a separate **VS Code window**
-5. In the terminal, run:
-   ```sh
-   npm install express nodemon
-   ```
-6. Start both servers by running:
-   ```sh
-   npm run dev
-   ```
-7. Open the **localhost link** in your browser
-8. Log in as an **Admin** or **Employee**
 
 ---
 
