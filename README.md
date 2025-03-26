@@ -87,6 +87,9 @@ Use the following credentials to log in as an **Admin**:
 - **Username:** `zidio@gmail.com`
 - **Password:** `itskhan1234`
 
+### **IMPORTANT NOTE**
+THE .env file is empty.
+Contact @aarizk1121@gmail.com for credentials 
 ---
 
 ## 🎯 Conclusion
